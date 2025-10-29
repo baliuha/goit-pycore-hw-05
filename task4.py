@@ -15,60 +15,65 @@ def input_error(func):
             return f"An unexpected error occurred: {str(ex)}"
     return inner
 
-"""
-Parse the user input into command and arguments
-"""
-def parse_input(user_input: str) -> tuple: 
-    # not adding decorator here so it's not masked as invalid command in main loop
+
+def parse_input(user_input: str) -> tuple:
+    """
+    Parse the user input into command and arguments
+    """
     if not user_input:
         return "", []
     cmd, *args = user_input.split()
-    return cmd.strip().lower(), *args
+    return cmd.strip().lower(), args
 
-"""
-Add a new contact to the contacts dictionary
-"""
+
 @input_error
 def add_contact(args: list, contacts: dict) -> str:
+    """
+    Add a new contact to the contacts dictionary
+    """
     name, phone = args
-    contacts[name] = phone    
+    contacts[name] = phone
     return "Contact added"
 
-"""
-Update an existing contact's phone number
-"""
+
 @input_error
 def change_contact(args: list, contacts: dict) -> str:
+    """
+    Update an existing contact's phone number
+    """
     name, phone = args
     if name not in contacts:
         raise KeyError
     contacts[name] = phone
     return "Contact updated"
-    
-"""
-Show the phone number of a contact
-"""
+
+
 @input_error
 def show_phone(args: list, contacts: dict) -> str:
+    """
+    Show the phone number of a contact
+    """
     name = args[0]
     return contacts[name]
 
-"""
-Show all contacts in the dictionary
-"""
-@input_error 
+
+@input_error
 def show_all(contacts: dict) -> str:
+    """
+    Show all contacts in the dictionary
+    """
     # decorator is not needed here for now but added for future consistency
     if not contacts:
         return "No contacts saved"
-    return json.dumps(contacts, indent=4)  
+    return json.dumps(contacts, indent=4)
+
 
 def main():
     contacts = {}
     print("Welcome to the assistant bot!")
     while True:
         user_input = input("Enter a command: ")
-        command, *args = parse_input(user_input)
+        command, args = parse_input(user_input)
 
         if command in ["close", "exit"]:
             print("Good bye!")
@@ -82,9 +87,10 @@ def main():
         elif command == "phone":
             print(show_phone(args, contacts))
         elif command == "all":
-            print(show_all(contacts))            
+            print(show_all(contacts))
         else:
-            print("Invalid command")        
+            print("Invalid command")
+
 
 if __name__ == "__main__":
     main()
